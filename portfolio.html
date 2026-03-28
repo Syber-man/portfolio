@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Srutiman Mohapatra — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600&family=Nunito+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1c1610;
+    --surface: #231d15;
+    --card: #2a2218;
+    --border: #3d3020;
+    --accent: #d4956a;
+    --accent2: #b07c4f;
+    --text: #f0e6d6;
+    --muted: #8a7560;
+    --glow: rgba(212, 149, 106, 0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* GRID BACKGROUND */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(212,149,106,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,149,106,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(28,22,16,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.78rem;
+    text-decoration: none;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    z-index: 1;
+  }
+
+  .hero-label {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeIn 0.5s 0.15s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Lora', serif;
+    font-size: clamp(3.5rem, 8vw, 7.5rem);
+    line-height: 1.05;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeIn 0.5s 0.3s forwards;
+  }
+
+  .hero-name em {
+    font-style: italic;
+    color: var(--accent2);
+  }
+
+  .hero-tagline {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 500px;
+    opacity: 0;
+    animation: fadeIn 0.5s 0.45s forwards;
+  }
+
+  .hero-contact {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeIn 0.5s 0.6s forwards;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .contact-item:hover { color: var(--accent); }
+
+  .contact-item .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .hero-orb {
+    position: absolute;
+    right: -100px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(176,124,79,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* SECTION */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.2rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-num {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: 'Lora', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin-left: 1rem;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2rem;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover {
+    border-color: rgba(212,149,106,0.35);
+  }
+
+  /* EDUCATION */
+  .edu-grid {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  .edu-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.6rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.4rem 2rem;
+    align-items: start;
+    transition: border-color 0.2s;
+  }
+
+  .edu-card:hover {
+    border-color: rgba(212,149,106,0.35);
+  }
+
+  .edu-degree {
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .edu-school {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+  }
+
+  .edu-year {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--accent);
+    white-space: nowrap;
+    padding-top: 0.3rem;
+  }
+
+  .edu-score {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--accent2);
+    grid-column: 1;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.6rem 2rem;
+    transition: border-color 0.2s;
+  }
+
+  .skill-card:hover {
+    border-color: rgba(212,149,106,0.35);
+  }
+
+  .skill-category {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.9rem;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.84rem;
+    font-family: 'Nunito Sans', sans-serif;
+    color: var(--text);
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .tag:hover {
+    background: rgba(212,149,106,0.1);
+    border-color: rgba(212,149,106,0.35);
+  }
+
+  /* PROJECTS */
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 2rem 2.5rem;
+    transition: border-color 0.2s;
+  }
+
+  .project-card:hover {
+    border-color: rgba(212,149,106,0.45);
+    border-left-color: var(--accent);
+  }
+
+  .project-title {
+    font-family: 'Lora', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .tech-chip {
+    background: rgba(176,124,79,0.12);
+    border: 1px solid rgba(176,124,79,0.25);
+    color: #c8966a;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.76rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+  }
+
+  .project-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .project-points li {
+    font-size: 0.9rem;
+    color: var(--muted);
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .project-points li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* CERTIFICATIONS */
+  .cert-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .cert-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.4rem 1.8rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .cert-card:hover {
+    border-color: rgba(212,149,106,0.35);
+  }
+
+  .cert-icon {
+    width: 36px; height: 36px;
+    background: rgba(212,149,106,0.1);
+    border: 1px solid rgba(212,149,106,0.2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .cert-name {
+    font-size: 0.92rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .cert-source {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 0.72rem;
+    color: var(--accent);
+    margin-top: 0.2rem;
+  }
+
+  /* ACHIEVEMENTS */
+  .achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .achievement-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.6rem;
+    transition: border-color 0.2s;
+  }
+
+  .achievement-card:hover {
+    border-color: rgba(212,149,106,0.35);
+  }
+
+  .ach-icon {
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .ach-text {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .ach-text strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-name {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .footer-note {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 500;
+    font-size: 0.72rem;
+    color: var(--border);
+    letter-spacing: 0.1em;
+  }
+
+  /* ANIMATIONS — reduced */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    #hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    footer { padding: 2rem 1.5rem; }
+    .edu-card { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">SM.</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#achievements">Activities</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="about" style="max-width:100%;padding:0;">
+  <div id="hero">
+    <div class="hero-orb"></div>
+    <p class="hero-label">// Computer Science & Engineering</p>
+    <h1 class="hero-name">Srutiman<br><em>Mohapatra</em></h1>
+    <p class="hero-tagline">B.Tech student at KIIT · Building with Python, Java, and the web · Passionate about ML & NLP</p>
+    <div class="hero-contact">
+      <a class="contact-item" href="mailto:srutiman@gmail.com">
+        <span class="dot"></span> srutiman@gmail.com
+      </a>
+      <a class="contact-item" href="tel:6370727155">
+        <span class="dot"></span> 6370727155
+      </a>
+      <span class="contact-item">
+        <span class="dot"></span> Bhubaneswar, Odisha
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Education</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="edu-grid">
+    <div class="edu-card reveal">
+      <div>
+        <div class="edu-degree">Bachelor of Technology — CSE</div>
+        <div class="edu-school">KIIT University, Bhubaneswar</div>
+      </div>
+      <div class="edu-year">2027</div>
+      <div class="edu-score">Ongoing</div>
+    </div>
+    <div class="edu-card reveal">
+      <div>
+        <div class="edu-degree">Higher Secondary (12th) — CBSE</div>
+        <div class="edu-school">Prabhujee English Medium School</div>
+      </div>
+      <div class="edu-year">2021</div>
+      <div class="edu-score">95%</div>
+    </div>
+    <div class="edu-card reveal">
+      <div>
+        <div class="edu-degree">Secondary (10th) — CBSE</div>
+        <div class="edu-school">Prabhujee English Medium School</div>
+      </div>
+      <div class="edu-year">2023</div>
+      <div class="edu-score">92.6%</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Technical Skills</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <div class="skill-category">Programming Languages</div>
+      <div class="skill-tags">
+        <span class="tag">C</span>
+        <span class="tag">Python</span>
+        <span class="tag">Java</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-category">Web Technologies</div>
+      <div class="skill-tags">
+        <span class="tag">HTML</span>
+        <span class="tag">CSS</span>
+        <span class="tag">JavaScript</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-category">Database</div>
+      <div class="skill-tags">
+        <span class="tag">MySQL</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-category">Tools & Platforms</div>
+      <div class="skill-tags">
+        <span class="tag">Git</span>
+        <span class="tag">VS Code</span>
+        <span class="tag">Linux</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-category">Core Subjects</div>
+      <div class="skill-tags">
+        <span class="tag">DSA</span>
+        <span class="tag">Algorithms</span>
+        <span class="tag">OS</span>
+        <span class="tag">DBMS</span>
+        <span class="tag">OOPs</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Projects</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="project-card reveal">
+    <div class="project-title">Multilingual Fake News Detection System</div>
+    <div class="project-tech">
+      <span class="tech-chip">Python</span>
+      <span class="tech-chip">NLP</span>
+      <span class="tech-chip">Machine Learning</span>
+      <span class="tech-chip">XLM-RoBERTa</span>
+    </div>
+    <ul class="project-points">
+      <li>Built a system to classify news articles as real or fake across multiple languages.</li>
+      <li>Performed data preprocessing including cleaning, tokenization, and dataset integration.</li>
+      <li>Used a pre-trained transformer model (XLM-RoBERTa) for multilingual text classification.</li>
+      <li>Implemented confidence scoring to indicate prediction reliability.</li>
+      <li>Explored model performance and improved results through preprocessing and hyperparameter tuning.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Certifications</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="cert-list">
+    <div class="cert-card reveal">
+      <div class="cert-icon">☕</div>
+      <div>
+        <div class="cert-name">Java</div>
+        <div class="cert-source">HackerRank</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">🌐</div>
+      <div>
+        <div class="cert-name">Intro to HTML, CSS & JavaScript</div>
+        <div class="cert-source">freeCodeCamp</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">⚙️</div>
+      <div>
+        <div class="cert-name">Data Structures in C</div>
+        <div class="cert-source">Self-taught</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Achievements & Activities</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="achievement-grid">
+    <div class="achievement-card reveal">
+      <div class="ach-icon">🏆</div>
+      <div class="ach-text"><strong>Hackathon — NIT Durgapur</strong><br>Collaborated with a team to design a tech-based problem-solving solution.</div>
+    </div>
+    <div class="achievement-card reveal">
+      <div class="ach-icon">💻</div>
+      <div class="ach-text"><strong>Coding Competition — IIIT Bhubaneswar</strong><br>Solved algorithmic challenges under time constraints.</div>
+    </div>
+    <div class="achievement-card reveal">
+      <div class="ach-icon">☁️</div>
+      <div class="ach-text"><strong>Google Cloud Innovation Challenge</strong><br>Proposed a cloud-based application concept and submitted the idea.</div>
+    </div>
+    <div class="achievement-card reveal">
+      <div class="ach-icon">🤖</div>
+      <div class="ach-text"><strong>Symposium v2.0 Workshop — KIIT-DU (Aug 2024)</strong><br>Built and deployed a text-to-video generation project using Generative AI.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name">Srutiman Mohapatra</div>
+  <div class="footer-note">BHUBANESWAR, ODISHA · B.TECH CSE · 2027</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
